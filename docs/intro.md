@@ -12,7 +12,7 @@ The source code to this project can be found on Github: [Fulcro-Bulma](https://g
 
 In your project.clj use the following dependency:
 
-`[org.photonsphere/fulcro.ui.bulma "0.1.0"]`
+`[org.photonsphere/fulcro.ui.bulma "0.1.1"]`
 
 ## Examples
 

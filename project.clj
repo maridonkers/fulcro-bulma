@@ -1,4 +1,4 @@
-(defproject org.photonsphere/fulcro.ui.bulma "0.1.0"
+(defproject org.photonsphere/fulcro.ui.bulma "0.1.1"
   :description "A fulcro.ui.bootstrap3 inspired library for Bulma -- Mari Donkers (photonsphere.org).
 
   (Twitter: @maridonkers | Google+: +MariDonkers | GitHub: maridonkers)"

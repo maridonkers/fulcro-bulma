@@ -4,17 +4,11 @@
   (Twitter: @maridonkers | Google+: +MariDonkers | GitHub: maridonkers)"
   (:require [fulcro.client.dom :as dom]
             [fulcro-css.css :as css]
-            [fulcro.client.primitives :as prim :refer [defui defsc]]
-            [fulcro.ui.elements :as ele]
-            [fulcro.events :as evt]
-            [fulcro.ui.html-entities :as ent]
+            [fulcro.client.primitives :as prim :refer [defsc]]
             [fulcro.i18n :refer [tr tr-unsafe]]
             [fulcro.client.mutations :as m :refer [defmutation]]
-            #?(:clj [clojure.future :refer :all])
-            [clojure.string :as str]
-            [clojure.set :as set]
-            [fulcro.client :as fc]
-            [fulcro.client.util :as util]))
+            ;; #?(:clj [clojure.future :refer :all])
+            [clojure.string :as str]))
 
 #?(:clj (defn- clj->js [m] m))
 

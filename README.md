@@ -19,9 +19,9 @@ The source code to the Fulcro-Bulma library can be found on Github: [Fulcro-Bulm
 
 ## Usage (via Clojars)
 
-In your project.clj use the following (Clojars) dependency:
+The library is on Clojars: [org.photonsphere/fulcro.ui.bulma](https://clojars.org/org.photonsphere/fulcro.ui.bulma). In your project.clj use the following dependency:
 
-`[org.photonsphere/fulcro.ui.bulma "0.1.0"]`
+`[org.photonsphere/fulcro.ui.bulma "0.1.1"]`
 
 Also see the file docs/intro.md.
 
