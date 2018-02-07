@@ -17,9 +17,9 @@ A purposely 'thin' Clojure library for the lean CSS-only, [Flexbox](https://en.w
 
 The source code to the Fulcro-Bulma library can be found on Github: [Fulcro-Bulma](https://github.com/maridonkers/fulcro-bulma)
 
-## Usage
+## Usage (via Clojars)
 
-In your project.clj use the following dependency:
+In your project.clj use the following (Clojars) dependency:
 
 `[org.photonsphere/fulcro.ui.bulma "0.1.0"]`
 
