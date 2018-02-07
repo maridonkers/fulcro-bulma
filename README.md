@@ -2,7 +2,7 @@
 
 A fulcro.ui.bootstrap3 inspired Clojure library for Bulma, to be used with Fulcro -- Mari Donkers (photonsphere.org).
 
-(Twitter: @maridonkers | Google+: +MariDonkers | GitHub: maridonkers)"
+(Twitter: @maridonkers | Google+: +MariDonkers | GitHub: maridonkers)
 
 ## Rationale
 
