@@ -177,6 +177,8 @@ Note: Source code incomplete, only showing Fulcro-Bulma related parts.
                                                      :current-route current-route}))
            (when ready?
              (ui-pages pages)))))
+
+#?(:cljs (css/upsert-css "example-css-id" Root))
 ```
 
 ### Dropdown
