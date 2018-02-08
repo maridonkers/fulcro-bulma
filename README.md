@@ -11,10 +11,6 @@ A purposely 'thin' Clojure library for the lean CSS-only, [Flexbox](https://en.w
 * Navbar
 * Dropdown
 
-## Github
-
-The source code to the Fulcro-Bulma library can be found on Github: [Fulcro-Bulma](https://github.com/maridonkers/fulcro-bulma)
-
 ## Usage (via Clojars)
 
 The library is on Clojars: [org.photonsphere/fulcro.ui.bulma](https://clojars.org/org.photonsphere/fulcro.ui.bulma). In your project.clj use the following dependency:

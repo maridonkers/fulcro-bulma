@@ -2,16 +2,6 @@
 
 A fulcro.ui.bootstrap3 inspired Clojure library for Bulma, to be used with Fulcro.
 
-## Github
-
-The source code to this project can be found on Github: [Fulcro-Bulma](https://github.com/maridonkers/fulcro-bulma)
-
-## Usage
-
-In your project.clj use the following dependency:
-
-`[org.photonsphere/fulcro.ui.bulma "0.1.1"]`
-
 ## Examples
 
 Taken and adapted from the Fulcro [Template Project](https://github.com/fulcrologic/fulcro-template).
