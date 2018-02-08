@@ -17,7 +17,7 @@ The library is on Clojars: [org.photonsphere/fulcro.ui.bulma](https://clojars.or
 
 `[org.photonsphere/fulcro.ui.bulma "0.1.1"]`
 
-Also see the file docs/intro.md.
+Also see the file [docs/intro.md](https://github.com/maridonkers/fulcro-bulma/blob/master/docs/intro.md).
 
 ## Copyright and License
 
