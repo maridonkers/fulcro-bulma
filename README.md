@@ -21,18 +21,12 @@ Also see the file [docs/intro.md](https://github.com/maridonkers/fulcro-bulma/bl
 
 ## Copyright and License
 
-Source code obtained from [Om Next[(https://github.com/omcljs/om) is:
-
-Copyright © 2013-2017 David Nolen
-
-Licensed under the Eclipse Public License.
-
 [Fulcro](https://github.com/fulcrologic/fulcro) is:
 
 Copyright (c) 2018, Fulcrologic, LLC
 The MIT License (MIT)
 
-The [Fulcro-Bulma](https://github.com/maridonkers/fulcro-bulma) library is:
+[Fulcro-Bulma](https://github.com/maridonkers/fulcro-bulma) is:
 
 Copyright (c) 2018, Mari Donkers (photonsphere.org; Twitter: @maridonkers | Google+: +MariDonkers | GitHub: maridonkers)
 
