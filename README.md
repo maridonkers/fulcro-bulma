@@ -4,7 +4,7 @@ A fulcro.ui.bootstrap3 inspired Clojure library for Bulma, to be used with Fulcr
 
 ## Rationale
 
-A purposely 'thin' Clojure library for the lean CSS-only, [Flexbox](https://en.wikipedia.org/wiki/CSS_Flex_Box_Layout) based, [Bulma](https://github.com/jgthms/bulma) framework. Work in progress. Intention is to *not* implement all Bulma components and elements. For example rendering and adding ClojureScript to a Bulma button is relatively straightforward. More complex Bulma components, such as a Navbar and a Dropdown, will be supported by this library.
+A purposely 'thin' [Clojure](http://clojure.org/)/[ClojureScript](http://clojurescript.org/) library for the lean CSS-only, [Flexbox](https://en.wikipedia.org/wiki/CSS_Flex_Box_Layout) based, [Bulma](https://github.com/jgthms/bulma) framework. Work in progress. Intention is to *not* implement all Bulma components and elements. For example rendering and adding ClojureScript to a Bulma button is relatively straightforward. More complex Bulma components, such as a Navbar and a Dropdown, will be supported by this library.
 
 ## Currently implemented Bulma components
 
