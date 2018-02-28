@@ -10,7 +10,7 @@ A fulcro.ui.bootstrap3 inspired Clojure library for Bulma, to be used with Fulcr
 
 * Dropdown
 
-![Dropdown](https://github.com/maridonkers/fulcro-bulma/blob/master/docs/Dropdown.png "Fulcro-Bulma Navbar")
+![Dropdown](https://github.com/maridonkers/fulcro-bulma/blob/master/docs/Dropdown.png "Fulcro-Bulma Dropdown")
 
 ## Examples
 
@@ -26,34 +26,24 @@ Note: Source code incomplete, only showing Fulcro-Bulma related parts.
             [fulcro.client.mutations :as m]
             [fulcro.client.dom :as dom]
             [fulcro-css.css :as css]
-            [fulcro.client.logging :as log]
+            #?(:clj [taoensso.timbre :as timbre
+                     :refer [log  trace  debug  info  warn  error  fatal  report
+                             logf tracef debugf infof warnf errorf fatalf reportf
+                             spy get-env]]
+               :cljs [taoensso.timbre :as timbre
+                      :refer-macros [log  trace  debug  info  warn  error  fatal  report
+                                     logf tracef debugf infof warnf errorf fatalf reportf
+                                     spy get-env]])
             [org.photonsphere.example.ui.html5-routing :as r]
             [org.photonsphere.example.ui.login :as l]
             [org.photonsphere.example.ui.user :as user]
             [org.photonsphere.example.ui.main :as main]
             [org.photonsphere.example.ui.preferences :as prefs]
             [org.photonsphere.example.ui.new-user :as nu]
-            [org.photonsphere.example.api.mutations :as api]
+            [org.photonsphere.rhetorica.api.mutations :as api]
             [fulcro.client.primitives :as prim :refer [defsc]]
             [fulcro.i18n :refer [tr]]
             [org.photonsphere.fulcro.ui.bulma :as b]))
-
-(def render-fcns
-  {:navbar-i18n-render-fcn (fn [this]
-                             (let [i18n-fcn (fn [lc]
-                                              (prim/transact! this
-                                                              `[(m/change-locale {:lang ~lc})]))]
-                               (dom/div #js {:className "field is-grouped"}
-                                        (dom/a #js {:href "#"
-                                                    :onClick (fn [] (i18n-fcn :en))} (tr "en"))
-                                        (dom/span nil "|")
-                                        (dom/a #js {:href "#"
-                                                    :onClick (fn [] (i18n-fcn :es))} (tr "es")))))
-   :navbar-philosophers-render-fcn
-   (fn [_]
-     [(dom/img #js {:key :karlrpopper-image
-                    :src "https://images.gr-assets.com/authors/1480329278p4/14772624.jpg"})
-      (dom/p #js {:key :karlrpopper-caption} "Karl R. Popper")])})
 
 ;; Use keywords formatted as navbar-pagename for the page links.
 (def top-navbar
@@ -69,11 +59,13 @@ Note: Source code incomplete, only showing Fulcro-Bulma related parts.
                                                  (b/navbar-link :navbar-preferences
                                                                 (tr "Preferences")
                                                                 {:displayed? false})
-                                                 (b/navbar-sublink :navbar-sublink
+                                                 (b/navbar-sublink :navbar-sublink1
                                                                    :navbar-philosophers-render-fcn)])
                            (b/navbar-menu-end :top-navbar-menu-end
                                               [(b/navbar-link :navbar-dummy (tr "Dummy (stateless)")
                                                               {:displayed? false :stateful? false})
+                                               (b/navbar-sublink :navbar-sublink2
+                                                                 :navbar-user-stats-render-fcn)
                                                (b/navbar-dropdown :navbar-dropdown-settings
                                                                   (tr "Settings")
                                                                   {:displayed? false}
@@ -85,10 +77,23 @@ Note: Source code incomplete, only showing Fulcro-Bulma related parts.
                                                                    (b/navbar-link :navbar-logout
                                                                                   (tr "Log out"))])]))
             nil))
-            
+
+(defrouter Pages :page-router
+  (ident [this props] [(:id props) :page])
+  :login l/LoginPage
+  :new-user nu/NewUser
+  :preferences prefs/PreferencesPage
+  :main main/MainPage)
+
+(def ui-pages (prim/factory Pages))
+
+(defn ui-login-stats [loading? user]
+  (dom/strong nil
+         (if loading? "... " (user/ui-user user))))
+
 (defsc TopNavbar [this
                   {:keys [navbar] :as props}
-                  {:keys [logged-in? current-route] :as cprops}]
+                  {:keys [loading-data current-user logged-in? current-route] :as cprops}]
   {:initial-state (fn [params]
                     {:navbar top-navbar})
    :ident (fn [] [:top-navbar/by-id :singleton])
@@ -109,11 +114,13 @@ Note: Source code incomplete, only showing Fulcro-Bulma related parts.
                                               :navbar-i18n-es (i18n-fcn :es)
                                               :navbar-main (r/nav-to! this :main)
                                               :navbar-preferences (r/nav-to! this :preferences)
+                                              :navbar-dummy #?(:clj (info "Dummy clicked!")
+                                                               :cljs (js/alert "Dummy clicked!"))
                                               :navbar-dropdown-account (r/nav-to! this :main)
                                               :navbar-dropdown-profile (r/nav-to! this :preferences)
                                               :navbar-logout (logout-fcn true))
-                                            (log/info (str "TopNavbar:: Selected NAVBAR link is: " link
-                                                           ", logged-in? " logged-in?)))
+                                            (info (str "TopNavbar:: Selected NAVBAR link is: " link
+                                                       ", logged-in? " logged-in?)))
                                 :stateful? true
                                 :attrs {:navbar {:style #js {:background-color "lightgray"}}
                                         :brand-img {:src "https://bulma.io/images/bulma-logo.png"
@@ -122,8 +129,26 @@ Note: Source code incomplete, only showing Fulcro-Bulma related parts.
                                                     :alt "Bulma"}
                                         ;; :dropdown-container {:className "is-hoverable"}
                                         :dropdown {:className "is-boxed"}}
-                                :render-fcns render-fcns})]
-    (log/info (str "TopNavbar:: logged-in? " logged-in? ", current-route " current-navbar-link))
+                                :render-fcns {:navbar-i18n-render-fcn (fn [this]
+                                                                        (let [i18n-fcn (fn [lc]
+                                                                                         (prim/transact! this
+                                                                                                         `[(m/change-locale {:lang ~lc})]))]
+                                                                          (dom/div #js {:className "field is-grouped"}
+                                                                                   (dom/a #js {:href "#"
+                                                                                               :onClick (fn [] (i18n-fcn :en))} (tr "en"))
+                                                                                   (dom/span nil "|")
+                                                                                   (dom/a #js {:href "#"
+                                                                                               :onClick (fn [] (i18n-fcn :es))} (tr "es")))))
+                                              :navbar-philosophers-render-fcn
+                                              (fn [_]
+                                                [(dom/img #js {:key :karlrpopper-image
+                                                               :src "https://images.gr-assets.com/authors/1480329278p4/14772624.jpg"})
+                                                 (dom/p #js {:key :karlrpopper-caption} "Karl R. Popper")])
+                                              :navbar-user-stats-render-fcn
+                                              (fn [_]
+                                                (when logged-in?
+                                                  (ui-login-stats loading-data current-user)))}})]
+    (info (str "TopNavbar:: logged-in? " logged-in? ", current-route " current-navbar-link))
     ;; Do not execute the transact! on the server (hence the reader conditional)...
     #?(:cljs (prim/transact! this
                              `[(b/display-navbar-link ~{:target :navbar-main
@@ -137,14 +162,13 @@ Note: Source code incomplete, only showing Fulcro-Bulma related parts.
                                (b/set-active-navbar-link ~{:id :top-navbar
                                                            :target current-navbar-link})]))
     ui-navbar))
-    
+
 (def ui-top-navbar (prim/factory TopNavbar))
 
-(defsc Root [this {:keys [ui/ready? ui/react-key logged-in? pages top-navbar]
+(defsc Root [this {:keys [ui/ready? ui/react-key ui/loading-data current-user logged-in? pages top-navbar]
                    :or {react-key "ROOT"}}]
   {:initial-state (fn [p] (merge
-                           {; Is there a user logged in?
-                            :logged-in? false
+                           {:logged-in? false
                                         ; Is the UI ready for initial render?
                                         ; This avoids flicker while we figure out
                                         ; if the user is already logged in
@@ -153,30 +177,32 @@ Note: Source code incomplete, only showing Fulcro-Bulma related parts.
                             :current-user nil
                             ;; :root/modals  (prim/get-initial-state Modals {})
                             :pages (prim/get-initial-state Pages nil)
-                            :top-navbar (prim/get-initial-state TopNavbar nil)
-                            }
+                            :top-navbar (prim/get-initial-state TopNavbar nil)}
                            r/app-routing-tree))
-   :query [:ui/react-key :ui/ready? :logged-in?
+   :query [:ui/react-key :ui/ready?
+           :ui/loading-data
            {:current-user (prim/get-query user/User)}
+           :logged-in?
            #_{:root/modals (prim/get-query Modals)}
                                         ; TODO: Check if this [routing-tree-key] is
                                         ; needed...seemed to affect initial state from SSR.
            fulcro.client.routing/routing-tree-key
-           :ui/loading-data
            {:pages (prim/get-query Pages)}
            {:top-navbar (prim/get-query TopNavbar)}]
    :css-include [TopNavbar]}
   (let [current-route (get-in pages [:fulcro.client.routing/current-route :id])]
-    (log/info (str "ROOT:: logged-in? " logged-in? ", current-route " current-route))
-  (dom/div #js {:key react-key}
-           (log/info (str "ROOT:: pages=" pages))
-           #_(ui-navbar this)
-           (ui-top-navbar (prim/computed top-navbar {:logged-in? logged-in?
-                                                     :current-route current-route}))
-           (when ready?
-             (ui-pages pages)))))
+    (info (str "ROOT:: logged-in? " logged-in? ", current-route " current-route))
+    (dom/div #js {:key react-key}
+             (info (str "ROOT:: pages=" pages))
+             #_(ui-navbar this)
+             (ui-top-navbar (prim/computed top-navbar {:loading-data loading-data
+                                                       :logged-in? logged-in?
+                                                       :current-user current-user
+                                                       :current-route current-route}))
+             (when ready?
+               (ui-pages pages)))))
 
-#?(:cljs (css/upsert-css "example-css-id" Root))
+#?(:cljs (css/upsert-css "rhetorica-css-id" Root))
 ```
 
 ### Dropdown
@@ -186,18 +212,19 @@ Note: Source code incomplete, only showing Fulcro-Bulma related parts.
 ```clojure
 (ns org.photonsphere.example.ui.preferences
   (:require [fulcro.client.primitives :as prim :refer [defsc]]
-            [fulcro.client.logging :as log]
+            #?(:clj [taoensso.timbre :as timbre
+                     :refer [log  trace  debug  info  warn  error  fatal  report
+                             logf tracef debugf infof warnf errorf fatalf reportf
+                             spy get-env]]
+               :cljs [taoensso.timbre :as timbre
+                      :refer-macros [log  trace  debug  info  warn  error  fatal  report
+                                     logf tracef debugf infof warnf errorf fatalf reportf
+                                     spy get-env]])
             [fulcro.client :as u]
             [fulcro.i18n :refer [tr]]
             [fulcro.client.dom :as dom]
             [fulcro.client.mutations :as m]
             [org.photonsphere.fulcro.ui.bulma :as b]))
-
-(def render-fcns {:philosophers-render-fcn 
-                  (fn [_]
-                    [(dom/img #js {:key :karlrpopper-image
-                                   :src "https://images.gr-assets.com/authors/1480329278p4/14772624.jpg"})
-                     (dom/p #js {:key :karlrpopper-caption} (str "“" (tr "No rational argument will have a rational effect on a man who does not want to adopt a rational attitude.") "”― Karl R. Popper"))])})
 
 (def car-make-dropdown
   (b/dropdown :car-make
@@ -224,7 +251,7 @@ Note: Source code incomplete, only showing Fulcro-Bulma related parts.
                (b/dropdown-item :toyota (tr "Toyota"))
                (b/dropdown-divider :korean)
                (b/dropdown-item :hyundai (tr "Hyundai"))]))
-               
+
 (defn multi-font-size-block
   "Renders a block with the same text in multiple font sizes."
   [txt]
@@ -250,7 +277,7 @@ Note: Source code incomplete, only showing Fulcro-Bulma related parts.
                (dom/p nil
                       (dom/b #js {:className "is-size-7"}
                              txt))))
-               
+
 (defsc PreferencesPage [this {:keys [id car-make-dropdown]}]
   {:initial-state (fn [_]
                     {:id :preferences
@@ -259,11 +286,11 @@ Note: Source code incomplete, only showing Fulcro-Bulma related parts.
            {:car-make-dropdown (prim/get-query b/Dropdown)}]
    :ident (fn [] [:preferences :page])}
   (let [facebook-button-fcn (fn []
-                              (log/info "Facebook button clicked.")
-                              #?(:cljs (js/alert (tr "Facebook button clicked!"))))
+                              #?(:clj (info "Facebook button clicked.")
+                                 :cljs (js/alert (tr "Facebook button clicked!"))))
         dropdown (b/ui-dropdown car-make-dropdown
                                 {:onSelect (fn [item]
-                                             (log/info (str "Current item is: " item)))
+                                             (info (str "Current item is: " item)))
                                  :stateful? true
                                  :attrs {;:dropdown {:className "is-hoverable"}
                                          :button {:className "is-primary"}
@@ -271,7 +298,14 @@ Note: Source code incomplete, only showing Fulcro-Bulma related parts.
                                          :button-icon {:className "fa fa-plus"}
                                         ; :items {:className "notification is-danger"}
                                          }
-                                 :render-fcns render-fcns})
+                                 :render-fcns {:philosophers-render-fcn
+                                               (fn [_]
+                                                 [(dom/img #js {:key :karlrpopper-image
+                                                                :src "https://images.gr-assets.com/authors/1480329278p4/14772624.jpg"})
+                                                  (dom/p #js {:key :karlrpopper-caption}
+                                                         (str "“"
+                                                              (tr "No rational argument will have a rational effect on a man who does not want to adopt a rational attitude.")
+                                                              "”― Karl R. Popper"))])}})
         button (dom/button #js {:className "button is-success"
                                 :onClick facebook-button-fcn}
                            (dom/span #js {:className "icon"}
