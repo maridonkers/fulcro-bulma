@@ -3,7 +3,7 @@
 A fulcro.ui.bootstrap3 inspired Clojure library for Bulma, to be used with Fulcro.
 
 
-## Source Code
+## Examples for supported Bulma components
 
 Taken and adapted from the Fulcro [Template Project](https://github.com/fulcrologic/fulcro-template).
 
