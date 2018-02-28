@@ -2,21 +2,14 @@
 
 A fulcro.ui.bootstrap3 inspired Clojure library for Bulma, to be used with Fulcro.
 
-## Screenshots
 
-* Navbar
-
-![Navbar](https://github.com/maridonkers/fulcro-bulma/blob/master/docs/Navbar.png "Fulcro-Bulma Navbar")
-
-* Dropdown
-
-![Dropdown](https://github.com/maridonkers/fulcro-bulma/blob/master/docs/Dropdown.png "Fulcro-Bulma Dropdown")
-
-## Examples
+## Source Code
 
 Taken and adapted from the Fulcro [Template Project](https://github.com/fulcrologic/fulcro-template).
 
 ### Navbar
+
+![Navbar](https://github.com/maridonkers/fulcro-bulma/blob/master/docs/Navbar.png "Fulcro-Bulma Navbar")
 
 Note: Source code incomplete, only showing Fulcro-Bulma related parts.
 
@@ -206,6 +199,8 @@ Note: Source code incomplete, only showing Fulcro-Bulma related parts.
 ```
 
 ### Dropdown
+
+![Dropdown](https://github.com/maridonkers/fulcro-bulma/blob/master/docs/Dropdown.png "Fulcro-Bulma Dropdown")
 
 Note: Source code incomplete, only showing Fulcro-Bulma related parts.
 
