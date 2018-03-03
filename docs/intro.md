@@ -66,7 +66,10 @@ Note: Source code incomplete, only showing Fulcro-Bulma related parts.
                                                                                   (tr "Account"))
                                                                    (b/navbar-link :navbar-dropdown-profile
                                                                                   (tr "Profile"))
-                                                                   (b/navbar-divider :navbar-dropdown-divider)
+                                                                   (b/navbar-divider :navbar-dropdown-divider1)
+                                                                   (b/navbar-sublink :navbar-sublink3
+                                                                                     :navbar-dropdown-intermezzo)
+                                                                   (b/navbar-divider :navbar-dropdown-divider2)
                                                                    (b/navbar-link :navbar-logout
                                                                                   (tr "Log out"))])]))
             nil))
@@ -126,11 +129,19 @@ Note: Source code incomplete, only showing Fulcro-Bulma related parts.
                                                                         (let [i18n-fcn (fn [lc]
                                                                                          (prim/transact! this
                                                                                                          `[(m/change-locale {:lang ~lc})]))]
+                                                                          #_(info (str "LOCALE=" locale))
+                                                                          ;;TODO Navbar Dropdown instead of separate choices.
                                                                           (dom/div #js {:className "field is-grouped"}
                                                                                    (dom/a #js {:href "#"
+                                                                                               :style #js {:color (if (= locale "en")
+                                                                                                                    "red"
+                                                                                                                    "#363636")}
                                                                                                :onClick (fn [] (i18n-fcn :en))} (tr "en"))
                                                                                    (dom/span nil "|")
                                                                                    (dom/a #js {:href "#"
+                                                                                               :style #js {:color (if (= locale "es")
+                                                                                                                    "red"
+                                                                                                                    "#363636")}
                                                                                                :onClick (fn [] (i18n-fcn :es))} (tr "es")))))
                                               :navbar-philosophers-render-fcn
                                               (fn [_]
@@ -140,7 +151,11 @@ Note: Source code incomplete, only showing Fulcro-Bulma related parts.
                                               :navbar-user-stats-render-fcn
                                               (fn [_]
                                                 (when logged-in?
-                                                  (ui-login-stats loading-data current-user)))}})]
+                                                  (ui-login-stats loading-data current-user)))
+                                              :navbar-dropdown-intermezzo
+                                              (fn [_]
+                                                [(dom/img #js {:key :hrbar-image
+                                                               :src "https://cloud.netlifyusercontent.com/assets/344dbf88-fdf9-42bb-adb4-46f01eedd629/04e4d4a6-99a2-4d2a-b746-be5bc310613a/hr-yiyi-zhou-3.gif"})])}})]
     (info (str "TopNavbar:: logged-in? " logged-in? ", current-route " current-navbar-link))
     ;; Do not execute the transact! on the server (hence the reader conditional)...
     #?(:cljs (prim/transact! this
